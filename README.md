@@ -120,7 +120,7 @@ CREATE DATABASE employee_erp CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 cd backend
 
 # Optional: Set Gemini API key for AI features (rule fallback used if empty)
-export AI_API_KEY="your-gemini-api-key"
+export AI_API_KEY="your-gemini-api-key_"
 
 # Run Spring Boot application
 mvn spring-boot:run

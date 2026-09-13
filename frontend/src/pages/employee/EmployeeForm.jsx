@@ -212,7 +212,7 @@ function EmployeeForm() {
                 value={formData.email}
                 onChange={handleChange}
                 className={`input ${errors.email ? 'input-error' : ''}`}
-                placeholder="hari@company.com"
+                placeholder="harij@company.com"
               />
               {errors.email && <p className="error-text">{errors.email}</p>}
             </div>
