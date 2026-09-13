@@ -1,0 +1,464 @@
+{
+  "info": {
+    "name": "Employee Management & Leave ERP System API",
+    "_postman_id": "9b12a812-32a1-4cf4-91b4-210984019231",
+    "description": "Production REST API Collection for Employee Management & Leave ERP System.\n\n### Environment Variables\n- `baseUrl`: `http://localhost:8080`\n- `token`: Automatically captured from `POST /api/auth/login`\n\n### Default Credentials\n- Admin: `admin@erp.com` / `Admin@123`\n- HR: `hr@erp.com` / `Hr@123`\n- Manager: `manager@erp.com` / `Manager@123`\n- Employee: `john.doe@erp.com` / `Employee@123`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login - Admin (Auto-captures JWT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    console.log('JWT Token successfully set in collection variables');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@erp.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - Employee",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@erp.com\",\n  \"password\": \"Employee@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] }
+          }
+        },
+        {
+          "name": "Register Employee Account (Admin/HR)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Sarah\",\n  \"lastName\": \"Connor\",\n  \"email\": \"sarah.connor@erp.com\",\n  \"password\": \"Password@123\",\n  \"role\": \"EMPLOYEE\",\n  \"departmentId\": 1,\n  \"designation\": \"Security Specialist\",\n  \"phone\": \"+1 555-0199\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Employee@123\",\n  \"newPassword\": \"Employee@456\",\n  \"confirmPassword\": \"Employee@456\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/change-password", "host": ["{{baseUrl}}"], "path": ["api", "auth", "change-password"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Employees",
+      "item": [
+        {
+          "name": "Get All Employees (Paginated & Filtered)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/employees?page=0&size=10&search=&status=ACTIVE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "employees"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "search", "value": "" },
+                { "key": "status", "value": "ACTIVE" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Employee By ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/employees/1", "host": ["{{baseUrl}}"], "path": ["api", "employees", "1"] }
+          }
+        },
+        {
+          "name": "Create Employee (Admin/HR)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alex\",\n  \"lastName\": \"Turner\",\n  \"email\": \"alex.turner@erp.com\",\n  \"role\": \"EMPLOYEE\",\n  \"departmentId\": 1,\n  \"designation\": \"DevOps Engineer\",\n  \"salary\": 92000,\n  \"employmentType\": \"FULL_TIME\",\n  \"gender\": \"MALE\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/employees", "host": ["{{baseUrl}}"], "path": ["api", "employees"] }
+          }
+        },
+        {
+          "name": "Update Employee",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alex\",\n  \"lastName\": \"Turner\",\n  \"email\": \"alex.turner@erp.com\",\n  \"designation\": \"Lead DevOps Engineer\",\n  \"salary\": 105000,\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/employees/1", "host": ["{{baseUrl}}"], "path": ["api", "employees", "1"] }
+          }
+        },
+        {
+          "name": "Get Employee Leave Balances",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/employees/1/leave-balances", "host": ["{{baseUrl}}"], "path": ["api", "employees", "1", "leave-balances"] }
+          }
+        },
+        {
+          "name": "Deactivate Employee (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/employees/1", "host": ["{{baseUrl}}"], "path": ["api", "employees", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Departments",
+      "item": [
+        {
+          "name": "Get All Departments",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/departments", "host": ["{{baseUrl}}"], "path": ["api", "departments"] }
+          }
+        },
+        {
+          "name": "Create Department",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cloud Architecture\",\n  \"description\": \"Responsible for enterprise cloud infrastructure and reliability\",\n  \"isActive\": true\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/departments", "host": ["{{baseUrl}}"], "path": ["api", "departments"] }
+          }
+        },
+        {
+          "name": "Get Department Employees",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/departments/1/employees", "host": ["{{baseUrl}}"], "path": ["api", "departments", "1", "employees"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Leave Management",
+      "item": [
+        {
+          "name": "Get All Leave Types",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/leave-types", "host": ["{{baseUrl}}"], "path": ["api", "leave-types"] }
+          }
+        },
+        {
+          "name": "Get My Leave Balances",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/leaves/my/balances", "host": ["{{baseUrl}}"], "path": ["api", "leaves", "my", "balances"] }
+          }
+        },
+        {
+          "name": "Apply for Leave",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"leaveTypeId\": 1,\n  \"startDate\": \"2026-10-15\",\n  \"endDate\": \"2026-10-17\",\n  \"reason\": \"Family wedding function\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/leaves", "host": ["{{baseUrl}}"], "path": ["api", "leaves"] }
+          }
+        },
+        {
+          "name": "Get My Leave History",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/leaves/my?page=0&size=10", "host": ["{{baseUrl}}"], "path": ["api", "leaves", "my"] }
+          }
+        },
+        {
+          "name": "Cancel Leave Request",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{baseUrl}}/api/leaves/1/cancel", "host": ["{{baseUrl}}"], "path": ["api", "leaves", "1", "cancel"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Leave Approvals",
+      "item": [
+        {
+          "name": "Get Pending Approvals (Manager/HR)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/leaves/approvals/pending?page=0&size=10", "host": ["{{baseUrl}}"], "path": ["api", "leaves", "approvals", "pending"] }
+          }
+        },
+        {
+          "name": "Approve Leave Request",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comments\": \"Approved, please hand over on-call duties to team.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/leaves/1/approve", "host": ["{{baseUrl}}"], "path": ["api", "leaves", "1", "approve"] }
+          }
+        },
+        {
+          "name": "Reject Leave Request",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comments\": \"Critical sprint deployment scheduled for these dates.\",\n  \"rejectionReason\": \"Critical sprint deployment scheduled for these dates.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/leaves/1/reject", "host": ["{{baseUrl}}"], "path": ["api", "leaves", "1", "reject"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Attendance",
+      "item": [
+        {
+          "name": "Check In",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Working from main office campus\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/attendance/check-in", "host": ["{{baseUrl}}"], "path": ["api", "attendance", "check-in"] }
+          }
+        },
+        {
+          "name": "Check Out",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Shift complete\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/attendance/check-out", "host": ["{{baseUrl}}"], "path": ["api", "attendance", "check-out"] }
+          }
+        },
+        {
+          "name": "Get Today's Status",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/attendance/today", "host": ["{{baseUrl}}"], "path": ["api", "attendance", "today"] }
+          }
+        },
+        {
+          "name": "Get My Attendance Monthly History",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/attendance/my?month=10&year=2026", "host": ["{{baseUrl}}"], "path": ["api", "attendance", "my"] }
+          }
+        },
+        {
+          "name": "Get Team Attendance (Manager)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/attendance/team", "host": ["{{baseUrl}}"], "path": ["api", "attendance", "team"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Dashboards",
+      "item": [
+        {
+          "name": "Admin Dashboard",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/dashboard/admin", "host": ["{{baseUrl}}"], "path": ["api", "dashboard", "admin"] }
+          }
+        },
+        {
+          "name": "HR Dashboard",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/dashboard/hr", "host": ["{{baseUrl}}"], "path": ["api", "dashboard", "hr"] }
+          }
+        },
+        {
+          "name": "Manager Dashboard",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/dashboard/manager", "host": ["{{baseUrl}}"], "path": ["api", "dashboard", "manager"] }
+          }
+        },
+        {
+          "name": "Employee Dashboard",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/dashboard/employee", "host": ["{{baseUrl}}"], "path": ["api", "dashboard", "employee"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. AI Operations",
+      "item": [
+        {
+          "name": "AI Leave Policy Chat",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"What is my remaining sick leave balance and can I take 2 days off next week?\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/ai/chat", "host": ["{{baseUrl}}"], "path": ["api", "ai", "chat"] }
+          }
+        },
+        {
+          "name": "AI Parse Natural Language Leave",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"I need casual leave from tomorrow to Friday for a family emergency\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/ai/generate-leave-request", "host": ["{{baseUrl}}"], "path": ["api", "ai", "generate-leave-request"] }
+          }
+        },
+        {
+          "name": "AI HR Intelligence Query",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"How many employees are on leave today and which department has the highest leave requests?\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/ai/hr-query", "host": ["{{baseUrl}}"], "path": ["api", "ai", "hr-query"] }
+          }
+        },
+        {
+          "name": "AI Employee Profile Summary",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/ai/employee-summary/1", "host": ["{{baseUrl}}"], "path": ["api", "ai", "employee-summary", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Audit Logs & Notifications",
+      "item": [
+        {
+          "name": "Get Audit Logs (Admin)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/audit-logs?page=0&size=20", "host": ["{{baseUrl}}"], "path": ["api", "audit-logs"] }
+          }
+        },
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/notifications", "host": ["{{baseUrl}}"], "path": ["api", "notifications"] }
+          }
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/notifications/unread-count", "host": ["{{baseUrl}}"], "path": ["api", "notifications", "unread-count"] }
+          }
+        },
+        {
+          "name": "Mark All Read",
+          "request": {
+            "method": "PUT",
+            "url": { "raw": "{{baseUrl}}/api/notifications/read-all", "host": ["{{baseUrl}}"], "path": ["api", "notifications", "read-all"] }
+          }
+        }
+      ]
+    }
+  ]
+}

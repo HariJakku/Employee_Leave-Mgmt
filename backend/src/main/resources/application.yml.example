@@ -1,0 +1,23 @@
+# ============================================================
+# application.yml.example
+# Copy this file and fill in real values.
+# DO NOT commit the filled-in version — it is in .gitignore.
+# ============================================================
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/employee_erp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: YOUR_DB_USERNAME
+    password: YOUR_DB_PASSWORD
+
+app:
+  jwt:
+    # Generate with: openssl rand -base64 64
+    secret: YOUR_JWT_SECRET_AT_LEAST_512_BITS
+    expiration: 86400000
+
+  ai:
+    provider: gemini
+    gemini:
+      # Get free key at: https://aistudio.google.com/app/apikey
+      api-key: YOUR_GEMINI_API_KEY
