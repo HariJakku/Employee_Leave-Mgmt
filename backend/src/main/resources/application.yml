@@ -4,9 +4,7 @@ server:
 spring:
   application:
     name: employee-leave-erp
-    spring:
-  application:
-    name: employee-leave-erp
+
 
   # Profile-specific config loaded from application-{profile}.yml
   profiles:
