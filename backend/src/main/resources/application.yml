@@ -1,4 +1,10 @@
+server:
+  port: ${PORT:8080}
+
 spring:
+  application:
+    name: employee-leave-erp
+    spring:
   application:
     name: employee-leave-erp
 
